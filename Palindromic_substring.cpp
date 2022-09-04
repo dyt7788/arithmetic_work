@@ -21,25 +21,25 @@ public:
     string longestPalindrome(string s) {
         int maxlen=1;
         int size=s.size();
-        int length=0;//子串的长度
+        int begin=0;//子串的长度
         if(size<2)
         {
             return s;//长度小于2就是一个字符一个字符是回文
         }
         else{
-            for(int i=0;i<size;i++)
+            for(int i=0;i<size-1;i++)
             {
                 for(int j=i+1;j<size;j++)
                 {
-                    if(is_palindromic(s.substr(i,j)))
+                    if(is_palindromic(s.substr(i,j))&&j-i+1>maxlen)
                     {
-                        length=j-i+1;
-                        maxlen=i;
+                        maxlen=j-i+1;
+                        begin=i;
                     }
                 }
             }
         }
-        return s.substr(maxlen,length);
+        return s.substr(begin,maxlen+begin);
     }
 };
 int main()
