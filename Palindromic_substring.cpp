@@ -20,7 +20,7 @@ public:
     }
     string longestPalindrome(string s) {
         int maxlen=1;
-        int size=s.size();
+        int size=s.length();
         int begin=0;//子串的长度
         if(size<2)
         {
@@ -31,7 +31,8 @@ public:
             {
                 for(int j=i+1;j<size;j++)
                 {
-                    if(is_palindromic(s.substr(i,j))&&j-i+1>maxlen)
+                    string sub_temp=s.substr(i,j);
+                    if(is_palindromic(sub_temp)&&j-i+1>maxlen)
                     {
                         maxlen=j-i+1;
                         begin=i;
@@ -39,11 +40,11 @@ public:
                 }
             }
         }
-        return s.substr(begin,maxlen+begin);
+        return s.substr(begin,maxlen);
     }
 };
 int main()
 {
     Solution s1;
-    cout<<s1.longestPalindrome("cbbd");
+    cout<<s1.longestPalindrome("babad");
 }
