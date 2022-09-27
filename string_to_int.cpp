@@ -1,37 +1,47 @@
 #include<iostream>
+#include<string>
 using namespace std;
 class Solution {
 public:
     int myAtoi(string s) {
-        int len=s.size();
-        int result=0;
-        int flag=1;
-        for(int i=0;i<len;i++)
-        {
-            if(s[i]>='0'&&s[i]<='9')
-            {
-                result=result*10+s[i]-'0';
-            }
-            if(s[i+1]<'0'||s[i+1]>'9')
-            {
-                   continue;
-            }
-            if(s[i]=='-')
-            {
-                if(s[i+1]>='0'&&s[i+1]<='9')
-                {
-                    flag=-1;
-                }
-            }
-            if(s[i]==' ')
-            {
-                if(s[i+1]>='0'&&s[i+1]<='9')
-                {
-                    return 0;
-                }
-            }
-        }
-        return result*flag;
+        // s=s.trim();//
+        int length = s.size(), p = 0, num, sign = 1, result = 0;
+		char ch;
+		while (p < length && s[p] == ' ')//读入前导空格 开始
+		{
+			++p;
+		}
+		if (s[p] == '+')
+		{
+			++p;
+		}
+		else if (s[p] == '-')
+		{
+			sign = -1;//负数标记
+			++p;
+		}
+		for (; p < length; ++p)
+		{
+			ch = s[p];
+			if (isdigit(ch))
+			{
+				num = ch - '0';
+				if (result > INT_MAX / 10 || result == INT_MAX / 10 && num > INT_MAX % 10)
+				{
+					return INT_MAX;//越界
+				}
+				else if (result < INT_MIN / 10 || result == INT_MIN / 10 && -num < INT_MIN % 10)
+				{
+					return INT_MIN;//越界
+				}
+				result = result * 10 + sign * num;
+			}
+			else
+			{
+				break;
+			}
+		}
+		return result;
     }
 };
 int main()

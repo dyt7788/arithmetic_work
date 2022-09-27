@@ -1,68 +1,34 @@
-#include<iostream>
-#include<cstring>
+#include <iostream>
+#include <math.h>
 using namespace std;
-int square[505][505],temp[505][505];
+const int M = 5;
+const int N = 6;
 
-void spin(int x,int y,int r)//顺时针旋转90°
+int maxprofit(int dp[M][N],int f[M][N],int money,int number)
 {
-	for(int i=x-r;i<=x+r;i++)
+	for (int i=1;i<=number;i++)
 	{
-		for(int k=y-r;k<=y+r;k++)
-			temp[i][k]=square[i][k];
-	}
-	int x1=x+r,y1=y-r;
-	for(int i=x-r;i<=x+r;i++)
-	{
-		for(int k=y-r;k<=y+r;k++)
+		for (int j=0;j<=money;j++)
 		{
-			square[i][k]=temp[x1][y1];
-			x1--;
+			dp[i][j]=0;
+			for (int k=0;k<=j;k++)
+			{
+				if (dp[i][j]<f[i][k]+dp[i-1][j-k])
+					dp[i][j]=f[i][k]+dp[i-1][j-k];
+			}
 		}
-		x1=x+r,y1++;
 	}
-}
-
-void spin_(int x,int y,int r)//逆时针旋转90°
-{
-	for(int i=x-r;i<=x+r;i++)
-	{
-		for(int k=y-r;k<=y+r;k++)
-			temp[i][k]=square[i][k];
-	}
-	int x1=x-r,y1=y+r;
-	for(int i=x-r;i<=x+r;i++)
-	{
-		for(int k=y-r;k<=y+r;k++)
-		{
-			square[i][k]=temp[x1][y1];
-			x1++;
-		}
-		y1--,x1=x-r;
-	}
+	return dp[number][money];
 }
 
 int main()
 {
-	int n,m,t=0;
-	cin>>n>>m;
-	for(int i=1;i<=n;i++)
-	{
-		for(int k=1;k<=n;k++)
-			square[i][k]=++t;
-	}//首先给矩阵赋值
-	int x,y,r,z;
-	for(int i=0;i<m;i++)
-	{
-		cin>>x>>y>>r>>z;
-		if(z==0)
-			spin(x,y,r);
-		else if(z==1)
-			spin_(x,y,r);
-	}
-	for(int i=1;i<=n;i++)
-	{
-		for(int k=1;k<=n;k++)
-			cout<<square[i][k]<<" ";
-		cout<<endl;
-	}
+	int dp[M][N]={0};
+	int f[M][N] = {0,0,0,0,0,0,
+				   0,11,12,13,14,15,
+				   0,0,5,10,15,20,
+				   0,2,10,30,32,40,
+				   0,20,21,22,23,24};
+	cout<<"max"<<maxprofit(dp,f,5,4)<<endl;
+	return 0;
 }

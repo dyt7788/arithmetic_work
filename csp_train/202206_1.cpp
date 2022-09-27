@@ -26,6 +26,5 @@ int main()
    for(int i=0;i<n;i++)
    {
     printf("%f\n",(a[i]-avg)/pow(d,0.5));
-    
    }
 }
