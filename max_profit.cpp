@@ -30,5 +30,5 @@ int main()
         0,2,10,30,32,40,
         0,20,21,22,23,24
     };
-    cout<<"max profit"<<maxprofit(dp,f,5,4)<<endl;
+    cout<<"max profit:"<<maxprofit(dp,f,5,4)<<endl;
 }
