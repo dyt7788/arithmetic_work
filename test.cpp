@@ -1,34 +1,48 @@
 #include <iostream>
-#include <math.h>
+#include <cstring>
+#include <algorithm>
 using namespace std;
-const int M = 5;
-const int N = 6;
-
-int maxprofit(int dp[M][N],int f[M][N],int money,int number)
+ 
+const int N = 510;
+int n, m;
+int dist[N],g[N][N];
+bool st[N]; //标记是否在集合中  
+ 
+int dijkstra()
 {
-	for (int i=1;i<=number;i++)
-	{
-		for (int j=0;j<=money;j++)
-		{
-			dp[i][j]=0;
-			for (int k=0;k<=j;k++)
-			{
-				if (dp[i][j]<f[i][k]+dp[i-1][j-k])
-					dp[i][j]=f[i][k]+dp[i-1][j-k];
-			}
-		}
-	}
-	return dp[number][money];
+    memset(dist, 0x3f, sizeof dist);
+    dist[1] = 0;
+    
+    for(int i = 0; i < n; i ++)
+    {
+        int t = -1;
+        for(int j = 1; j <= n; j ++)
+            if(!st[j] && (t==-1 || dist[j] < dist[t]))
+                t = j;
+                
+        //if(t == n) break; //可以提前break, 优化时间开销 
+        
+        st[t] = true;
+        for(int j = 1; j <= n; j ++)    //更新集合中的最短路径
+            dist[j] = min(dist[j], dist[t]+g[t][j]);
+        
+    }
+    
+    if(dist[n] == 0x3f3f3f3f) return -1;
+    else return dist[n];
 }
-
 int main()
 {
-	int dp[M][N]={0};
-	int f[M][N] = {0,0,0,0,0,0,
-				   0,11,12,13,14,15,
-				   0,0,5,10,15,20,
-				   0,2,10,30,32,40,
-				   0,20,21,22,23,24};
-	cout<<"max"<<maxprofit(dp,f,5,4)<<endl;
-	return 0;
+    cin >> n >> m;
+    
+    memset(g, 0x3f, sizeof g);
+ 
+    int a,b,c;
+    for(int i = 0; i < m; i++)
+    {
+        scanf("%d%d%d", &a, &b, &c);//边数较多,scanf省时
+        g[a][b] = min(c, g[a][b]);  //由题意,图中可能存在重边和自环
+    }
+    
+    cout << dijkstra();
 }
