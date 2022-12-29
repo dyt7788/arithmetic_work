@@ -1,48 +1,94 @@
 #include <iostream>
-#include <cstring>
-#include <algorithm>
 using namespace std;
  
-const int N = 510;
-int n, m;
-int dist[N],g[N][N];
-bool st[N]; //标记是否在集合中  
+#define N 100   //默认有99个物品。第一个不使用
+int w[N];    //每个物品的重量
+int v[N];    //每个物品的价值
+int x[N];     //x[i]=1：物品i放入背包，0代表不放入
+int n,c;       //n：一共有多少物品，c：背包的最大容量
+/*
+*CurWeight 和 CurValue存储当前放入背包的数据，随着对解空间的不断深入而变化
+*/
+int CurWeight = 0;  //当前放入背包的物品总重量
+int CurValue = 0;   //当前放入背包的物品总价值
+/*
+*BestValue 和 BestX在找到一个叶子节点时进行 约束函数 判断，满足的话就连同修改储存的最优解
+*/
+int BestValue = 0;  //最优值；当前的最大价值，初始化为0
+int BestX[N];       //最优解；BestX[i]=1代表物品i放入背包，0代表不放入
  
-int dijkstra()
+void input()
 {
-    memset(dist, 0x3f, sizeof dist);
-    dist[1] = 0;
-    
-    for(int i = 0; i < n; i ++)
+    cout<<"请输入物品的个数："<<endl;
+    cin>>n;
+    cout<<"请输入每个物品的重量及价值(如12 22):"<<endl;
+    for(int i = 1; i <= n; i++)
     {
-        int t = -1;
-        for(int j = 1; j <= n; j ++)
-            if(!st[j] && (t==-1 || dist[j] < dist[t]))
-                t = j;
-                
-        //if(t == n) break; //可以提前break, 优化时间开销 
-        
-        st[t] = true;
-        for(int j = 1; j <= n; j ++)    //更新集合中的最短路径
-            dist[j] = min(dist[j], dist[t]+g[t][j]);
-        
+        cin>>w[i]>>v[i];
     }
-    
-    if(dist[n] == 0x3f3f3f3f) return -1;
-    else return dist[n];
+    cout<<"请输入背包的容量："<<endl;
+    cin>>c;
 }
-int main()
+void output()
 {
-    cin >> n >> m;
-    
-    memset(g, 0x3f, sizeof g);
+    cout<<"最优值是:"<<BestValue<<endl;
+    cout<<"(";
+    for(int i=1;i<=n;i++)
+        cout<<BestX[i]<<" ";
+    cout<<")";
  
-    int a,b,c;
-    for(int i = 0; i < m; i++)
+}
+/*
+*回溯函数 参数t表示当前处在第几层做抉择，t=1时表示当前在决定是否将第一个物品放入背包
+*/
+void backtrack(int t)
+{
+    //叶子节点，输出结果
+    if(t>n)
     {
-        scanf("%d%d%d", &a, &b, &c);//边数较多,scanf省时
-        g[a][b] = min(c, g[a][b]);  //由题意,图中可能存在重边和自环
+        //如果找到了一个更优的解
+        if(CurValue>BestValue)
+        {
+            //保存更优的值和解
+            BestValue = CurValue;
+            for(int i=1; i<=n; ++i)
+                BestX[i] = x[i];
+        }
     }
-    
-    cout << dijkstra();
+    else
+    {
+        //遍历当前节点的子节点：0 不放入背包，1放入背包
+        for(int i=0; i<=1; ++i)
+        {
+            x[t]=i;
+ 
+            if(i==0) //不放入背包
+            {
+                backtrack(t+1);
+            }
+            else //放入背包
+            {
+                //约束条件：放的下
+                if((CurWeight+w[t])<=c)
+                {
+                    CurWeight += w[t];
+                    CurValue += v[t];
+                    backtrack(t+1);
+                    CurWeight -= w[t];
+                    CurValue -= v[t];
+                }
+            }
+        }
+    }
+ 
+ 
+}
+ 
+int main(int argc, char* argv[])
+{
+ 
+    input();
+    backtrack(1);
+    output();
+    return 0;
 }
